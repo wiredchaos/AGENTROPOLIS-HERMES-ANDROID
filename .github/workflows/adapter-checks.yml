@@ -1,0 +1,19 @@
+name: Adapter checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run adapter contract checks
+        run: bash tests/adapter_contract_test.sh
+      - name: ShellCheck adapter scripts
+        run: shellcheck runtime-adapters/hermes-desktop-android/install.sh tests/adapter_contract_test.sh
