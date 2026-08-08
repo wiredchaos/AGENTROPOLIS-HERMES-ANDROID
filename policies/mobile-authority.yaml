@@ -1,0 +1,69 @@
+version: 1
+policy_id: agentropolis.hermes-android.mobile-authority
+status: canary
+
+surface:
+  role: mobile_mission_control
+  authority_root: human_operator
+  execution_role: supervised_adapter
+
+connection:
+  default_mode: read_only
+  require_backend_identity: true
+  reject_identity_mismatch: true
+  require_authenticated_session_binding: true
+
+capabilities:
+  default_ttl_seconds: 900
+  permanent_grants_allowed: false
+  adb:
+    enabled_by_default: false
+    require_separate_lease: true
+    require_device_owner_confirmation: true
+  filesystem_write:
+    enabled_by_default: false
+    require_explicit_scope: true
+  repository_write:
+    enabled_by_default: false
+    require_signed_approval: true
+  deployment:
+    enabled_by_default: false
+    require_signed_approval: true
+  wallet_signing:
+    enabled: false
+
+consequential_actions:
+  require_human_approval: true
+  approval_must_be: [signed, scoped, time_bounded, receipt_linked]
+
+receipts:
+  required: true
+  require_session_reference: true
+  require_runtime_identity: true
+  require_artifact_hashes_when_available: true
+  require_policy_decision_id: true
+  redact: [secrets, absolute_filesystem_paths, machine_identifiers]
+
+emergency_controls:
+  - stop
+  - revoke
+  - quarantine
+  - disable_runtime_lane
+  - reject_pending_external_actions
+  - human_handoff
+
+thermodynamic_observability:
+  required_metrics:
+    - session_entropy
+    - repeated_command_rate
+    - tool_failure_rate
+    - context_churn
+    - authority_expansion_rate
+    - queue_age
+    - thermal_state
+    - battery_drain
+    - memory_pressure
+    - runtime_divergence
+    - receipt_completeness
+    - operator_intervention_frequency
+  automatic_authority_expansion: false
