@@ -1,0 +1,113 @@
+version: 1
+policy_id: agentropolis.edge.runtime
+status: canary
+
+canonical_scope:
+  layer: infrastructure
+  operator_surface: HERMES_EDGE
+  security_authority: 54-T
+  provenance_authority: WikiVault
+  cognition_budget: Quantization_Torque
+  asbe_scope: AGENTIC_STUDIOS_BACK_END_ONLY
+
+modes:
+  POCKET:
+    default: true
+    local_heavy_inference: false
+    edge_moe: false
+    target_fps: 24
+    max_device_pixel_ratio: 1.25
+    animation_budget: low
+    prefer_remote_for_heavy_work: true
+  EDGE:
+    local_heavy_inference: conditional
+    edge_moe: conditional
+    target_fps: 30
+    max_device_pixel_ratio: 1.5
+    animation_budget: medium
+    prefer_remote_for_heavy_work: true
+  POWER:
+    requires_explicit_opt_in: true
+    local_heavy_inference: conditional
+    edge_moe: conditional
+    target_fps: 45
+    max_device_pixel_ratio: 2.0
+    animation_budget: bounded
+    prefer_remote_for_heavy_work: false
+
+routing_inputs:
+  - user_intent
+  - task_capability_requirement
+  - cognition_budget
+  - hardware_profile
+  - thermal_state
+  - battery_state
+  - memory_pressure
+  - network_quality
+  - cost_budget
+  - effective_capabilities
+
+thermal_policy:
+  NOMINAL:
+    local_heavy_compute: conditional
+  WARMING:
+    reduce_render_budget: true
+    prohibit_new_heavy_local_jobs: true
+    prefer_remote_execution: true
+  SERIOUS:
+    checkpoint_local_inference: true
+    heavy_jobs_remote_only: true
+    suspend_nonessential_background_work: true
+    spatial_profile: minimal
+  CRITICAL:
+    local_heavy_compute: false
+    thin_ui_only: true
+    preserve_state: true
+    remote_execution_only: true
+
+render_policy:
+  pause_when_hidden: true
+  throttle_offscreen_visuals: true
+  respect_reduced_motion: true
+  lazy_load_spatial_assets: true
+  sleep_offscreen_agents: true
+  continuous_polling_default: false
+  prefer_event_driven_updates: true
+
+edge_moe:
+  role: oversized_moe_memory_pressure_escape_hatch
+  default_enabled: false
+  allowed_modes: [EDGE, POWER]
+  requires:
+    - approved_model_profile
+    - hardware_capability_pass
+    - thermal_state_nominal_or_better
+    - memory_pressure_within_profile
+    - 54t_effective_capability_pass
+  deny_when:
+    - thermal_state_serious
+    - thermal_state_critical
+    - low_power_mode_and_no_user_override
+  benchmark_claims:
+    community_claims_are_production_guarantees: false
+    internal_reproduction_required_for_production: true
+
+receipt:
+  required: true
+  fields:
+    - task_id
+    - mode
+    - execution_target
+    - runtime_id
+    - model_id
+    - hardware_snapshot
+    - thermal_state
+    - battery_state
+    - memory_pressure
+    - local_remote_decision
+    - fallback_reason
+    - capability_decision
+    - utility_counters
+    - benchmark_state
+    - started_at
+    - completed_at
