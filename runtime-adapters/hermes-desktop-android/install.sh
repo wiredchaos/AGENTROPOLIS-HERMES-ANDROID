@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-adapter_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+adapter_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 lock_file="$adapter_dir/upstream.lock"
 
 if [ ! -f "$lock_file" ]; then

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-repo_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+repo_root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 lock="$repo_root/runtime-adapters/hermes-desktop-android/upstream.lock"
 policy="$repo_root/policies/mobile-authority.yaml"
 installer="$repo_root/runtime-adapters/hermes-desktop-android/install.sh"
